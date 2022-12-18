@@ -96,6 +96,7 @@ class jBuild extends job{
             //--Finish Job--
             cEnviro.cLair.maps.get(nMap).cleaning = false;   //## WILL BUG OUT WITH MULTIPLE BIG PROJECTS IN ONE ROOM  -> NEED TO ADD A 1 TIME LIMIT ##
             cEntity.jobs.remove(0);
+            cEnviro.cLair.mStation.createDConTable(cEnviro.cLair.maps);
         }
     }
     void buildNextItem(ArrayList<map> maps){

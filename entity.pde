@@ -1,6 +1,8 @@
 class entity{
     int ID = floor(random(1000000, 9999999));
 
+    animator cAnimator = new animator();
+
     PVector iPos;   //Index position for this entity    #### SHOULD PROBABLY JUST ROLL THESE 2 INTO A 3D VECTOR LIKE EVERYTHING ELSE NOW ####
     int mPos;       //Index of map for this entity      #####################################################################################
 
@@ -19,7 +21,7 @@ class entity{
     }
 
     void display(PVector pos, float dim){
-        //pass
+        cAnimator.display(pos, new PVector(dim, dim));
     }
     void displayPath(){
         //pass

@@ -76,17 +76,12 @@ class dialogue{
 
         rectMode(CENTER);
         imageMode(CENTER);
-        /*
-        ################################################
-        ## TEMPORARILY DISABLES BEFORE TEXTURES ADDED ##
-        ################################################
         image(associatedImgs.get(speechNumber), 
             associatedPos.get(speechNumber).x, associatedPos.get(speechNumber).y +imageWobbleAnim(), 
             associatedDim.get(speechNumber).x, associatedDim.get(speechNumber).y);
-        */
         //## SUBSTITUTE HERE ##
-        fill(255,0,0);
-        rect(associatedPos.get(speechNumber).x, associatedPos.get(speechNumber).y +imageWobbleAnim(), associatedDim.get(speechNumber).x, associatedDim.get(speechNumber).y);
+        //fill(255,0,0);
+        //rect(associatedPos.get(speechNumber).x, associatedPos.get(speechNumber).y +imageWobbleAnim(), associatedDim.get(speechNumber).x, associatedDim.get(speechNumber).y);
         //## SUBSTITUTE HERE ##
         
         popStyle();
@@ -147,6 +142,9 @@ class dialogue{
     }
 
     void setupScenario0(){
+        /*
+        Introduction to new game
+        */
         //Add text
         speeches.clear();
         speeches.add(new ArrayList<String>());
@@ -167,20 +165,93 @@ class dialogue{
         associatedPos.clear();
         associatedDim.clear();
 
-        //associatedImgs.add();
-        //associatedImgs.add();
-        //associatedImgs.add();
+        associatedImgs.add(robotPortrait_0);
+        associatedImgs.add(robotPortrait_1);
+        associatedImgs.add(robotPortrait_0);
 
         associatedPos.add( new PVector(7.0*width/10.0, height/2.0) );
         associatedPos.add( new PVector(7.0*width/10.0, height/2.0) );
         associatedPos.add( new PVector(7.0*width/10.0, height/2.0) );
 
-        associatedDim.add( new PVector(2.0*width/10.0, 3.0*width/10.0) );
-        associatedDim.add( new PVector(2.0*width/10.0, 3.0*width/10.0) );
-        associatedDim.add( new PVector(2.0*width/10.0, 3.0*width/10.0) );
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
         //...
     }
     void setupScenario1(){
-        //pass
+        /*
+        Introduction to orcs
+        */
+        //Add text
+        speeches.clear();
+        speeches.add(new ArrayList<String>());
+        speeches.add(new ArrayList<String>());
+        speeches.add(new ArrayList<String>());
+        speeches.add(new ArrayList<String>());
+        speeches.add(new ArrayList<String>());
+        String line0_0 = "Ayo whos that big gren llokin bastard over there";
+        String line0_1 = "Not liking the look of that one chief";
+        String line1_0 = "Yo its me my dude";
+        String line1_1 = "hows it run and rollin?";
+        String line2_0 = "getourt of here";
+        String line3_0 = ":_(";
+        String line4_0 = "Lets go ok";
+        String line4_1 = "big bruh";
+        speeches.get(0).add(line0_0);speeches.get(0).add(line0_1);
+        speeches.get(1).add(line1_0);speeches.get(1).add(line1_1);
+        speeches.get(2).add(line2_0);
+        speeches.get(3).add(line3_0);
+        speeches.get(4).add(line4_0);speeches.get(4).add(line4_1);
+        //Add images
+        associatedImgs.clear();
+        associatedPos.clear();
+        associatedDim.clear();
+
+        associatedImgs.add(robotPortrait_0);
+        associatedImgs.add(orcPortrait_0);
+        associatedImgs.add(robotPortrait_0);
+        associatedImgs.add(orcPortrait_1);
+        associatedImgs.add(robotPortrait_0);
+
+        associatedPos.add( new PVector(7.0*width/10.0, height/2.0) );
+        associatedPos.add( new PVector(2.0*width/10.0, height/2.0) );
+        associatedPos.add( new PVector(7.0*width/10.0, height/2.0) );
+        associatedPos.add( new PVector(2.0*width/10.0, height/2.0) );
+        associatedPos.add( new PVector(7.0*width/10.0, height/2.0) );
+
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
+        //...
+    }
+    void setupScenario2(){
+        /*
+        End game fail message
+        */
+        //Add text
+        speeches.clear();
+        speeches.add(new ArrayList<String>());
+        speeches.add(new ArrayList<String>());
+        String line0_0 = "Not a dub";
+        String line0_1 = "You had too many guys exit the duingeon so youve lost";
+        String line1_0 = "Dont let them through nects time";
+        speeches.get(0).add(line0_0);speeches.get(0).add(line0_1);
+        speeches.get(1).add(line1_0);
+        //Add images
+        associatedImgs.clear();
+        associatedPos.clear();
+        associatedDim.clear();
+
+        associatedImgs.add(robotPortrait_0);
+        associatedImgs.add(robotPortrait_0);
+
+        associatedPos.add( new PVector(7.0*width/10.0, height/2.0) );
+        associatedPos.add( new PVector(5.0*width/10.0, height/2.0) );
+
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
+        associatedDim.add( new PVector(3.0*width/10.0, 3.0*width/10.0) );
+        //...
     }
 }

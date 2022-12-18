@@ -1,4 +1,6 @@
 class volume{
+    animator cAnimator = new animator();
+
     boolean isCollideable;
     String type;
 
@@ -11,7 +13,7 @@ class volume{
     }
 
     void display(PVector pos, float dim){
-        //pass
+        cAnimator.display(pos, new PVector(dim, dim));
     }
     void determineAction(tile cTile){
         /*
@@ -63,22 +65,11 @@ class brainCase extends volume{
     //##########
 
     brainCase(){
+        cAnimator.init_tile_volume_brainCase();
         isCollideable = true;
         type = "brainCase";
     }
 
-    @Override
-    void display(PVector pos, float dim){
-        pushStyle();
-
-        float multi = 0.8;
-        rectMode(CENTER);
-        fill(232, 121, 178);
-
-        rect(pos.x, pos.y, multi*dim, multi*dim);
-
-        popStyle();
-    }
     @Override
     void actionActivation(tile cTile){
         /*
@@ -118,22 +109,11 @@ class wall extends volume{
     //pass
 
     wall(){
+        cAnimator.init_tile_volume_wall();
         isCollideable = true;
         type = "wall";
     }
 
-    @Override
-    void display(PVector pos, float dim){
-        pushStyle();
-
-        float multi = 0.9;
-        rectMode(CENTER);
-        fill(80,80,80);
-
-        rect(pos.x, pos.y, multi*dim, multi*dim);
-
-        popStyle();
-    }
 }
 class spikeTrap extends volume{
     int dmg = 7;
@@ -145,24 +125,11 @@ class spikeTrap extends volume{
     boolean cycleComplete = true;   //Whether this trap has completed its attack,active,cooldown,refreshed cycle yet
 
     spikeTrap(){
+        cAnimator.init_tile_volume_spikeTrap();
         isCollideable = false;
         type = "spikeTrap";
     }
 
-    @Override
-    void display(PVector pos, float dim){
-        pushStyle();
-
-        float multi = 0.5;
-        rectMode(CENTER);
-        fill(40,80,40);
-        if(active){
-            fill(255,0,0);}
-
-        rect(pos.x, pos.y, multi*dim, multi*dim);
-
-        popStyle();
-    }
     @Override
     void progressTimers(){
         if(!cycleComplete){
@@ -198,22 +165,11 @@ class fireTrap extends volume{
     //pass
 
     fireTrap(){
+        cAnimator.init_tile_volume_fireTrap();
         isCollideable = true;
         type = "fireTrap";
     }
 
-    @Override
-    void display(PVector pos, float dim){
-        pushStyle();
-
-        float multi = 0.8;
-        rectMode(CENTER);
-        fill(250,120,120);
-
-        rect(pos.x, pos.y, multi*dim, multi*dim);
-
-        popStyle();
-    }
     @Override
     void actionActivation(tile cTile){
         //pass
@@ -227,86 +183,41 @@ class buildDesk extends volume{
     //pass
 
     buildDesk(){
+        cAnimator.init_tile_volume_buildDesk();
         isCollideable = true;
         type = "buildDesk";
     }
 
-    @Override
-    void display(PVector pos, float dim){
-        pushStyle();
-
-        float multi = 0.95;
-        rectMode(CENTER);
-        fill(80,80,80);
-        noStroke();
-
-        ellipse(pos.x, pos.y, multi*dim, multi*dim);
-
-        popStyle();
-    }
 }
 class door extends volume{
     boolean isPortal;   //Determines how connecting lines are shown in camera
 
     door(boolean portalDoor){
+        cAnimator.init_tile_volume_door();
         isCollideable = false;
         type = "door";
 
         isPortal = portalDoor;
     }
 
-    @Override
-    void display(PVector pos, float dim){
-        pushStyle();
-
-        float multi = 0.95;
-        rectMode(CENTER);
-        fill(145, 128, 126);
-
-        rect(pos.x, pos.y, multi*dim, multi*dim);
-
-        popStyle();
-    }
 }
 class exit extends volume{
     //pass
 
     exit(){
+        cAnimator.init_tile_volume_exit();
         isCollideable = false;
         type = "exit";
     }
 
-    @Override
-    void display(PVector pos, float dim){
-        pushStyle();
-
-        float multi = 0.95;
-        rectMode(CENTER);
-        fill(134, 156, 121);
-
-        rect(pos.x, pos.y, multi*dim, multi*dim);
-
-        popStyle();
-    }
 }
 class entrance extends volume{
     //pass
 
     entrance(){
+        cAnimator.init_tile_volume_entrance();
         isCollideable = false;
         type = "entrance";
     }
 
-    @Override
-    void display(PVector pos, float dim){
-        pushStyle();
-
-        float multi = 0.95;
-        rectMode(CENTER);
-        fill(122, 121, 156);
-
-        rect(pos.x, pos.y, multi*dim, multi*dim);
-
-        popStyle();
-    }
 }

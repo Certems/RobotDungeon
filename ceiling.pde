@@ -1,4 +1,6 @@
 class ceiling{
+    animator cAnimator = new animator();
+
     String type;
 
     ceiling(){
@@ -6,6 +8,6 @@ class ceiling{
     }
 
     void display(PVector pos, float dim){
-        //pass
+        cAnimator.display(pos, new PVector(dim, dim));
     }
 }

@@ -3,6 +3,7 @@ environment cEnviro;
 void setup(){
     fullScreen(P2D);
 
+    loadAll();
     cEnviro = new environment();
 }
 void draw(){

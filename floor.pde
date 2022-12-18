@@ -1,4 +1,6 @@
 class floor{
+    animator cAnimator = new animator();
+
     String type;
 
     floor(){
@@ -6,7 +8,7 @@ class floor{
     }
 
     void display(PVector pos, float dim){
-        //pass
+        cAnimator.display(pos, new PVector(dim,dim));
     }
 }
 
@@ -16,19 +18,7 @@ class slab extends floor{
 
     slab(){
         type = "slab";
+        cAnimator.init_tile_floor_slab();
     }
 
-    @Override
-    void display(PVector pos, float dim){
-        pushStyle();
-
-        rectMode(CENTER);
-
-        fill(255);
-        noStroke();
-
-        rect(pos.x, pos.y, 0.9*dim, 0.9*dim);
-
-        popStyle();
-    }
 }

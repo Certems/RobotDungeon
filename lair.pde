@@ -2,6 +2,8 @@ class lair{
     ArrayList<map> maps = new ArrayList<map>();
     int cMap = 0;
 
+    boolean gameOver = false;
+
     int mReserve = 4;   //Indicates which map is marked as the 'reserve' map, which is a resting point for allies
 
     monitorStation mStation     = new monitorStation();
@@ -12,14 +14,18 @@ class lair{
 
     storyManager cStory = new storyManager();
 
-    int coins = 94;
+    int coins = 15;
 
+    ArrayList<ArrayList<String>> enemyCatalogue = new ArrayList<ArrayList<String>>();   //Lists enemies in the respective tiers they belong (difficulty rating)
+    ArrayList<String> enemySpawner = new ArrayList<String>();   //Lists the enemies to be spawned and the order they will be spawned in
     int nWave = 0;      //Wave number currently on
     int waveCount = 0;  //Number of enemies in this wave (TOTAL)
     int nSpawn   = 0;   //Number of enemies left to spawn (LEFT)
     int nKilled  = 0;   //Number of enemies killed
     int nExitted = 0;   //Number of enemies who have exitted the map
     boolean waveOver = false;   //Has the current wave ended
+    
+    int exitFailureNum = 3; //If X leave the map, you lose
 
     int eSpawnRate  = 0;//Determines the rate at which enemies try to enter the entrances (frames per spawn) -> this value can be changed during the course of the game
     int eSpawnTimer = 0;
@@ -31,7 +37,7 @@ class lair{
     int computeTicker = 0;      //
 
     lair(){
-        //pass
+        initEnemyCatalgue();
     }
 
     void displayMap(int mapN){
@@ -91,6 +97,9 @@ class lair{
         //Enemies DEAD
         fill(232, 151, 170);
         text(nKilled, wNumPos.x +wNumDim.x/3.0, wNumPos.y +wNumDim.y/3.0);
+        //Enemies EXITTED
+        fill(255,0,0);
+        text(nExitted, wNumPos.x, wNumPos.y +wNumDim.y/3.0);
 
         //Wave number
         PVector nWavePos = new PVector(wNumPos.x -wNumDim.x, wNumPos.y);
@@ -162,16 +171,38 @@ class lair{
             }
         }
     }
-    void calcEnemySpawn(){
-        /*
-        Decides when to spawn enemies
-        */
-        eSpawnTimer++;
-        if(eSpawnTimer > eSpawnRate){   //## ADD SOME RANDOMNESS SO THEY SPAWN ~EVERY ESPAWNRATE, NOT EXACTLY ##
-            eSpawnTimer = 0;
-            //println("Spawned Enemy...");
-            nSpawn--;
-            spawnEnemyAtRandom();
+    void checkGameOver(){
+        if(nExitted >= exitFailureNum){
+            println("--GAME OVER--");
+            gameOver = true;
+            compute  = false;
+        }
+    }
+
+
+    void initEnemyCatalgue(){
+        enemyCatalogue.clear();
+        if(true){   //## CONDITION TO CHECK LAIR REGION E.G SNOW, GRASSLAND, ETC TO DETERMINE WHAT ENEMIES CAN ATTACK ##
+            int tierNumber = 4;     //For the number of tiers you want available
+            for(int i=0; i<tierNumber; i++){
+                enemyCatalogue.add( new ArrayList<String>() );
+                if(i==0){
+                    enemyCatalogue.get(0).add("enemyOrc");
+                    enemyCatalogue.get(0).add("enemyGoblin");
+                }
+                if(i==1){
+                    enemyCatalogue.get(1).add("enemyShieldBearer");
+                    enemyCatalogue.get(1).add("enemyBerserker");
+                }
+                if(i==2){
+                    enemyCatalogue.get(2).add("enemyBrute");
+                    enemyCatalogue.get(2).add("enemySprinter");
+                }
+                if(i==3){
+                    enemyCatalogue.get(3).add("enemyWarlord");
+                    enemyCatalogue.get(3).add("enemyBeast");
+                }
+            }
         }
     }
 
@@ -206,12 +237,150 @@ class lair{
             waveOver = true;
         }
     }
+    void generateNewWave(){
+        /*
+        Considers the state of the game in order to create a wave of approporiate difficulty, and then start that wave
+        1. Set an enemy # and difficulty for wave
+        2. Populate enemySpawner
+        3. Reset wave variables
+
+        difficulty = higher prob to pick difficuly enemies
+        */
+        nWave++;
+        int eCount = nWave*5;
+        float difficulty = 0.1;
+        populateEnemySpawnerRandom(eCount, difficulty);
+        startNewWave(eCount);
+    }
+    void populateEnemySpawnerRandom(int eCount, float difficulty){
+        for(int i=0; i<eCount; i++){
+            int tier = enemyTierSelector(difficulty);
+            String newEnemyString = generateStringRandomEnemy(tier);
+            enemySpawner.add(newEnemyString);
+        }
+    }
+    int enemyTierSelector(float difficulty){
+        /*
+        Selects an enemy tier based off of a probability distrubution given
+        */
+        return 0;
+    }
+    String generateStringRandomEnemy(int tier){
+        /*
+        Selects a string of an enemy randomly chosen from the given tier
+        */
+        float rVal = random(0.0, 1.0);
+        float selProb = 1.0/enemyCatalogue.get(tier).size();    //## ERROR ON EMPTY TIERS --> div by 0 ##
+        String enemyString = enemyCatalogue.get(tier).get( floor(rVal/selProb) );
+        return enemyString;
+    }
+    void calcEnemySpawn(){
+        /*
+        Decides when to spawn enemies
+        */
+        if(enemySpawner.size() > 0){
+            eSpawnTimer++;
+            if(eSpawnTimer > eSpawnRate){   //## ADD SOME RANDOMNESS SO THEY SPAWN ~EVERY ESPAWNRATE, NOT EXACTLY ##
+                eSpawnTimer = 0;
+                //println("Spawned Enemy...");
+                nSpawn--;
+                spawnNextEnemyAtRandomEntrance();
+            }
+        }
+    }
+    void spawnNextEnemyAtRandomEntrance(){
+        /*
+        Randomly chooses an entrance to spawn an enemy at
+        */
+        ArrayList<PVector> eVec = mStation.findEntranceVecs();
+        float sProb = 1.0 /eVec.size();
+        float rVal = random(0.0, 1.0);
+        int spawnEntrance = floor(rVal/sProb);
+        createEnemy(enemySpawner.get(0), int(eVec.get(spawnEntrance).x), mStation.mapSets.get(int(eVec.get(spawnEntrance).x)).entrances.get(int(eVec.get(spawnEntrance).y)));
+        enemySpawner.remove(0);
+    }
+    void createEnemy(String enemyName, int iMap, PVector iPos){
+        /*
+        . Creates an enemy instance
+        . Places enemy at given tile location
+        ** Must have new enemies manually added to this list
+        */
+        if(enemyName == "enemyOrc"){
+            orc newEnemy = new orc(iPos, iMap);
+            assignJobLeaveMap(newEnemy);
+            maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
+        }
+        if(enemyName == "enemyGoblin"){
+            goblin newEnemy = new goblin(iPos, iMap);
+            assignJobLeaveMap(newEnemy);
+            maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
+        }
+
+
+        if(enemyName == "enemyShieldBearer"){
+            shieldBearer newEnemy = new shieldBearer(iPos, iMap);
+            assignJobLeaveMap(newEnemy);
+            maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
+        }
+        if(enemyName == "enemyBerserker"){
+            berserker newEnemy = new berserker(iPos, iMap);
+            assignJobLeaveMap(newEnemy);
+            maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
+        }
+
+
+        if(enemyName == "enemyBrute"){
+            brute newEnemy = new brute(iPos, iMap);
+            assignJobLeaveMap(newEnemy);
+            maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
+        }
+        if(enemyName == "enemySprinter"){
+            sprinter newEnemy = new sprinter(iPos, iMap);
+            assignJobLeaveMap(newEnemy);
+            maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
+        }
+
+
+        if(enemyName == "enemyWarlord"){
+            warlord newEnemy = new warlord(iPos, iMap);
+            assignJobLeaveMap(newEnemy);
+            maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
+        }
+        if(enemyName == "enemyBeast"){
+            beast newEnemy = new beast(iPos, iMap);
+            assignJobLeaveMap(newEnemy);
+            maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
+        }
+        //...
+    }
+    void assignJobLeaveMap(entity newEntity){
+        /*
+        Gives the entity the job to leave the map
+        (always used for enemies)
+        */
+        jMove newJob = new jMove( findExitVecs().get(0) );
+        newJob.cEntity = newEntity;
+        newEntity.jobs.add(newJob);
+    }
+    /*
+    orc createEnemyOrc(int iMap, PVector iPos){
+        orc newEnemy = new orc(iPos, iMap);
+
+        jMove newJob = new jMove( findExitVecs().get(0) );
+        newJob.cEntity = newEnemy;
+        newEnemy.jobs.add(newJob);
+
+        return newEnemy;
+        //maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
+    }
+    */
+
+
     void startNewWave(int eCount){
         /*
         Initialises a new wave
         eCount = # enemies to be spawned
         */
-        nWave++;
         waveCount = eCount;
         nSpawn    = waveCount;
         nKilled   = 0;
@@ -222,25 +391,6 @@ class lair{
         Sets eSpawnRate based on certain conditions
         */
         eSpawnRate = 5;
-    }
-    void spawnEnemyAtRandom(){
-        /*
-        Randomly chooses an entrance to spawn an enemy at
-        */
-        ArrayList<PVector> eVec = mStation.findEntranceVecs();
-        float sProb = 1.0 /eVec.size();
-        float rVal = random(0.0, 1.0);
-        int spawnEntrance = floor(rVal/sProb);
-        createEnemy(int(eVec.get(spawnEntrance).x), mStation.mapSets.get(int(eVec.get(spawnEntrance).x)).entrances.get(int(eVec.get(spawnEntrance).y)));
-    }
-    void createEnemy(int iMap, PVector iPos){
-        orc newEnemy = new orc(iPos, iMap);
-
-        jMove newJob = new jMove( findExitVecs().get(0) );
-        newJob.cEntity = newEnemy;
-        newEnemy.jobs.add(newJob);
-
-        maps.get(iMap).tiles.get(int(iPos.y)).get(int(iPos.x)).enemies.add(newEnemy);
     }
     void calcEnemyAction(int iMap){
         /*

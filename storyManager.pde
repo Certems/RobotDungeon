@@ -1,6 +1,7 @@
 class storyManager{
     boolean lairIntroTriggered = false;
     boolean wave1Triggered = false;
+    boolean gameOverTriggered = false;
 
     storyManager(){
         //pass
@@ -13,6 +14,11 @@ class storyManager{
         if(cEnviro.cLair.nWave==1 && !wave1Triggered){
             runDialogue_firstWaveEvent();
         }
+        if(cEnviro.cLair.gameOver){
+            runDialogue_gameOver();
+            cEnviro.cLair.gameOver = false;
+            cEnviro.switchToHome();
+        }
     }
     void runDialogue_newLairIntro(){
         cEnviro.dialogueMenu = true;
@@ -23,6 +29,11 @@ class storyManager{
         cEnviro.dialogueMenu = true;
         cEnviro.cDialogue.setupScenario1();
         wave1Triggered = true;
+    }
+    void runDialogue_gameOver(){
+        cEnviro.dialogueMenu = true;
+        cEnviro.cDialogue.setupScenario2();
+        gameOverTriggered = true;
     }
     //...
 

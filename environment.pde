@@ -132,6 +132,11 @@ class environment{
         }
     }
 
+    void init_newGame(){
+        createLair(0);
+        cLair.coins = 15;
+    }
+
 
     void switchToHome(){
         loadButtons_homeScreen();
@@ -141,7 +146,7 @@ class environment{
         switchGoBack();
     }
     void switchToNewGame(){
-        createLair(1);
+        init_newGame();
         cLair.cStory.runDialogue_newLairIntro();
         switchGoBack();
     }
@@ -295,7 +300,7 @@ class environment{
             }
             if(key == '5'){
                 //Start new wave
-                cLair.startNewWave(10);
+                cLair.generateNewWave();
             }
             if(key == '6'){
                 //SWITHC UPGRADE CHOICE MAKING

@@ -1,14 +1,10 @@
 class enemy extends entity{
-    //pass
+    String name;
 
     enemy(PVector iPos, int mPos){
         super(iPos, mPos);
+        name = "null";
     }
-
-    void display(PVector pos, float dim){
-        //pass
-    }
-
 
     @Override
     void doIdleAction(){
@@ -16,7 +12,10 @@ class enemy extends entity{
         When an enemy is idle it will;
         . Wander around the map it is currently in
         */
-        wanderCurrentMap(cEnviro.cLair.maps);
+        boolean hasLeft = checkAtExit(cEnviro.cLair.maps);
+        if(!hasLeft){
+            wanderCurrentMap(cEnviro.cLair.maps);}
+        
     }
     @Override
     Integer findEntityInd(ArrayList<map> maps){
@@ -49,6 +48,25 @@ class enemy extends entity{
             path.remove(0);
         }
     }
+    boolean checkAtExit(ArrayList<map> maps){
+        /*
+        Checks to see if it is at the xit, and if so leaves
+        returns whether it exitted or not
+        */
+        if(maps.get(mPos).tiles.get(int(iPos.y)).get(int(iPos.x)).cVolume.type == "exit"){
+            println("Exitting...");
+            //If currently on exit, then leave
+            int eInd = findEntityInd(maps);
+            maps.get( mPos ).tiles.get( int(iPos.y) ).get( int(iPos.x) ).enemies.remove(eInd);
+            cEnviro.cLair.nExitted++;
+            cEnviro.cLair.waveCount--;
+            cEnviro.cLair.checkGameOver();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
 
 
@@ -57,16 +75,19 @@ class orc extends enemy{
 
     orc(PVector iPos, int mPos){
         super(iPos, mPos);
+        cAnimator.init_enemy_orc_static();
+        name = "enemyOrc";
         health = floor(random(10,15));
         motionSpd = 2;
     }
 
+    /*
     @Override
     void display(PVector pos, float dim){
         pushStyle();
 
         float multi = 0.6;
-        fill(255,100,100);
+        fill(106, 138, 110);
         if(health <= 0){
             fill(100,100,100);}
 
@@ -74,4 +95,95 @@ class orc extends enemy{
 
         popStyle();
     }
+    */
+}
+class goblin extends enemy{
+    //pass
+
+    goblin(PVector iPos, int mPos){
+        super(iPos, mPos);
+        cAnimator.init_enemy_goblin_static();
+        name = "enemyGoblin";
+        health = floor(random(5,6));
+        motionSpd = 1;
+    }
+
+}
+
+
+class shieldBearer extends enemy{
+    //pass
+
+    shieldBearer(PVector iPos, int mPos){
+        super(iPos, mPos);
+        cAnimator.init_enemy_shieldBearer_static();
+        name = "enemyShieldBearer";
+        health = floor(random(18,22));
+        motionSpd = 3;
+    }
+
+}
+class berserker extends enemy{
+    //pass
+
+    berserker(PVector iPos, int mPos){
+        super(iPos, mPos);
+        cAnimator.init_enemy_berserker_static();
+        name = "enemyBerserker";
+        health = floor(random(15,20));
+        motionSpd = 2;
+    }
+
+}
+
+
+class brute extends enemy{
+    //pass
+
+    brute(PVector iPos, int mPos){
+        super(iPos, mPos);
+        cAnimator.init_enemy_brute_static();
+        name = "enemyBrute";
+        health = floor(random(24,28));
+        motionSpd = 2;
+    }
+
+}
+class sprinter extends enemy{
+    //pass
+
+    sprinter(PVector iPos, int mPos){
+        super(iPos, mPos);
+        cAnimator.init_enemy_sprinter_static();
+        name = "enemySprinter";
+        health = floor(random(10,15));
+        motionSpd = 1;
+    }
+
+}
+
+
+class warlord extends enemy{
+    //pass
+
+    warlord(PVector iPos, int mPos){
+        super(iPos, mPos);
+        cAnimator.init_enemy_warlord_static();
+        name = "enemyWarlord";
+        health = floor(random(40,50));
+        motionSpd = 3;
+    }
+
+}
+class beast extends enemy{
+    //pass
+
+    beast(PVector iPos, int mPos){
+        super(iPos, mPos);
+        cAnimator.init_enemy_beast_static();
+        name = "enemyBeast";
+        health = floor(random(30,45));
+        motionSpd = 2;
+    }
+
 }
